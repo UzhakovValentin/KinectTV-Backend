@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>TV_Backend.WebAPI</RootNamespace>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.18" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shedules\IIT\Bachelor\Session\Exam\" />
+    <Folder Include="Shedules\IIT\Bachelor\Session\Offset\" />
+    <Folder Include="Shedules\IIT\Master\Session\Exam\" />
+    <Folder Include="xls\" />
+  </ItemGroup>
+
+
+</Project>
