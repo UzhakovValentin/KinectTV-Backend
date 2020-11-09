@@ -11,6 +11,7 @@ using HtmlAgilityPack;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace TV_Backend.WebAPI.Controllers
 {
@@ -19,35 +20,40 @@ namespace TV_Backend.WebAPI.Controllers
     {
         private readonly IHttpClientFactory httpClient;
         private readonly IWebHostEnvironment env;
+        private readonly IConfiguration configuration;
 
-        public SheduleController(IHttpClientFactory httpClient, IWebHostEnvironment env)
+        public SheduleController(IHttpClientFactory httpClient,
+            IWebHostEnvironment env,
+            IConfiguration configuration)
         {
             this.httpClient = httpClient;
             this.env = env;
+            this.configuration = configuration;
         }
 
         [HttpGet("bachelor")]
         public async Task<List<string>> GetBachelorShedule()
         {
             var client = httpClient.CreateClient();
-            var responce = await client.GetAsync(new Uri("https://www.mirea.ru/education/schedule-main/schedule/"));
+            var responce = await client.GetAsync(new Uri(configuration.GetSection("URL")["Mirea.ru"]));
             var html = await responce.Content.ReadAsStringAsync();
 
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
 
-            var links = document.DocumentNode.SelectNodes("//a[@class='xls']")/*.Attributes["href"]*/;
+            var links = document.DocumentNode.SelectNodes("//a[@class='xls']");
             List<string> nodes = new List<string>();
-            int count = 1;
+
             foreach (var link in links)
             {
-                if (link.Attributes["href"].Value.Contains("IIT"))
+                if (link.Attributes["href"].Value.Contains("IIT") && !link.Attributes["href"].Value.Contains("mag"))
                 {
+                    var uriSegments = new Uri(link.Attributes["href"].Value).Segments;
+                    var sheduleName = uriSegments[uriSegments.Length - 1];
+                    var bytes = await client.GetByteArrayAsync(link.Attributes["href"].Value);
+                    await System.IO.File.WriteAllBytesAsync(Path.Combine(env.ContentRootPath, $"Shedules/IIT/Bachelor/{sheduleName}"), bytes);
 
                     nodes.Add(link.Attributes["href"].Value);
-                    var bytes = await client.GetByteArrayAsync(link.Attributes["href"].Value);
-                    await System.IO.File.WriteAllBytesAsync(Path.Combine(env.ContentRootPath, $"xls/{count}.xlsx"), bytes);
-                    count++;
                 }
             }
             return nodes.Select(str => str).ToList();
@@ -66,9 +72,31 @@ namespace TV_Backend.WebAPI.Controllers
         }
 
         [HttpGet("master")]
-        public string GetMasterShedule()
+        public async Task<List<string>> GetMasterShedule()
         {
-            return "1234";
+            var client = httpClient.CreateClient();
+            var responce = await client.GetAsync(new Uri(configuration.GetSection("URL")["Mirea.ru"]));
+            var html = await responce.Content.ReadAsStringAsync();
+
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(html);
+
+            var links = document.DocumentNode.SelectNodes("//a[@class='xls']")/*.Attributes["href"]*/;
+            List<string> nodes = new List<string>();
+
+            foreach (var link in links)
+            {
+                if (link.Attributes["href"].Value.Contains("IIT") && link.Attributes["href"].Value.Contains("mag"))
+                {
+                    var uriSegments = new Uri(link.Attributes["href"].Value).Segments;
+                    var sheduleName = uriSegments[uriSegments.Length - 1];
+                    var bytes = await client.GetByteArrayAsync(link.Attributes["href"].Value);
+                    await System.IO.File.WriteAllBytesAsync(Path.Combine(env.ContentRootPath, $"Shedules/IIT/Master/{sheduleName}"), bytes);
+
+                    nodes.Add(link.Attributes["href"].Value);
+                }
+            }
+            return nodes.Select(str => str).ToList();
         }
 
         [HttpGet("master/exam")]
@@ -76,6 +104,5 @@ namespace TV_Backend.WebAPI.Controllers
         {
             return "1234";
         }
-
     }
 }

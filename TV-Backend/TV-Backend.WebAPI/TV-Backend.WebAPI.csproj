@@ -12,10 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="SheduleScreenshots\" />
     <Folder Include="Shedules\IIT\Bachelor\Session\Exam\" />
     <Folder Include="Shedules\IIT\Bachelor\Session\Offset\" />
     <Folder Include="Shedules\IIT\Master\Session\Exam\" />
-    <Folder Include="xls\" />
   </ItemGroup>
 
 

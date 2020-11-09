@@ -1,0 +1,25 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:7443",
+      "sslPort": 0
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "ExcelConverterService": {
+    "commandName": "Project",
+    "launchBrowser": false,
+    "applicationUrl": "http://localhost:5001",
+    "environmentVariables": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    }
+  },
+  "profiles": {
+    "ExcelConverterService": {
+      "commandName": "Project",
+      "applicationUrl": "http://localhost:5001"
+    }
+  }
+}

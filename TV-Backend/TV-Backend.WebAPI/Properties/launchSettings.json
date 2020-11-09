@@ -19,7 +19,7 @@
     },
     "TV_Backend.WebAPI": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "shedule",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
